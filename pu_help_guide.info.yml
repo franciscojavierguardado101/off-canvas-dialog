@@ -1,0 +1,7 @@
+name: 'PU Help Guide'
+type: module
+description: 'Define editorial help guides that open in a modal window when an editor clicks a help button near fields.'
+package: Custom
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drupal:node

@@ -1,0 +1,5 @@
+help_guide.add_form:
+  title: 'Add help guide'
+  route_name: entity.help_guide.add_form
+  appears_on:
+    - view.help_guides.page_1

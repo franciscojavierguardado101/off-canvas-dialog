@@ -1,0 +1,21 @@
+entity.help_guide.view:
+  title: 'View'
+  route_name: entity.help_guide.canonical
+  base_route: entity.help_guide.canonical
+
+entity.help_guide.edit_form:
+  title: 'Edit'
+  route_name: entity.help_guide.edit_form
+  base_route: entity.help_guide.canonical
+
+entity.help_guide.delete_form:
+  title: 'Delete'
+  route_name: entity.help_guide.delete_form
+  base_route: entity.help_guide.canonical
+  weight: 100
+
+entity.help_guide.collection:
+  title: 'Help Guides'
+  route_name: view.help_guides.page_1
+  base_route: system.admin_content
+  weight: 100

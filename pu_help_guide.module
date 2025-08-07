@@ -1,0 +1,200 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Help guide module.
+ */
+
+use Drupal\Core\Render\Element;
+use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\pu_help_guide\Entity\HelpGuide;
+use Drupal\user\UserInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+
+/**
+ * Implements hook_theme().
+ */
+function pu_help_guide_theme(): array {
+  return [
+    'help_guide' => ['render element' => 'elements'],
+  ];
+}
+
+/**
+ * Prepares variables for help guide templates.
+ *
+ * Default template: help-guide.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: Help guide data and fields.
+ *   - attributes: HTML attributes for the wrapper element.
+ */
+function template_preprocess_help_guide(array &$variables): void {
+  /** @var \Drupal\pu_help_guide\Entity\HelpGuide $entity */
+  $entity = $variables['elements']['#help_guide'];
+
+  $entity_type_id = $entity->get('entity_type')->value;
+  $bundle = $entity->get('entity_bundle')->value;
+  $field_name = $entity->get('field_name')->value;
+
+  // Default values as fallback.
+  $entity_type_label = $entity_type_id;
+  $entity_bundle_label = $bundle;
+  $field_label = $field_name;
+
+  // Get services once.
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $field_manager = \Drupal::service('entity_field.manager');
+
+  // Get entity type definition.
+  if ($entity_type_manager->hasDefinition($entity_type_id)) {
+    $entity_type_definition = $entity_type_manager->getDefinition($entity_type_id);
+    $entity_type_label = $entity_type_definition->getLabel();
+
+    // Get bundle label if bundle entity type exists.
+    if ($bundle_entity_type = $entity_type_definition->getBundleEntityType()) {
+      if ($bundle_entity = $entity_type_manager->getStorage($bundle_entity_type)->load($bundle)) {
+        $entity_bundle_label = $bundle_entity->label();
+      }
+    }
+
+    // Get field label from definitions.
+    $field_definitions = $field_manager->getFieldDefinitions($entity_type_id, $bundle);
+    if (isset($field_definitions[$field_name])) {
+      $field_label = $field_definitions[$field_name]->getLabel();
+    }
+  }
+
+  // Pass to Twig.
+  $variables['entity_type_label'] = $entity_type_label;
+  $variables['entity_bundle_label'] = $entity_bundle_label;
+  $variables['field_name_label'] = $field_label;
+
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  foreach (Element::children($variables['elements']) as $key) {
+    if ($key === 'description' && isset($variables['elements']['description'][0])) {
+      $variables['elements']['description'][0]['#format'] ??= 'rich_text';
+    }
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
+
+/**
+ * Implements hook_user_cancel().
+ */
+function pu_help_guide_user_cancel($edit, UserInterface $account, $method): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('help_guide');
+
+  switch ($method) {
+    case 'user_cancel_block_unpublish':
+      // Unpublish help guides.
+      $help_guide_ids = $storage->getQuery()
+        ->condition('uid', $account->id())
+        ->condition('status', 1)
+        ->accessCheck(FALSE)
+        ->execute();
+
+      foreach ($storage->loadMultiple($help_guide_ids) as $help_guide) {
+        if ($help_guide instanceof HelpGuide) {
+          $help_guide->set('status', FALSE)->save();
+        }
+      }
+      break;
+
+    case 'user_cancel_reassign':
+      // Anonymize help guides.
+      $help_guide_ids = $storage->getQuery()
+        ->condition('uid', $account->id())
+        ->accessCheck(FALSE)
+        ->execute();
+
+      foreach ($storage->loadMultiple($help_guide_ids) as $help_guide) {
+        if ($help_guide instanceof HelpGuide) {
+          $help_guide->setOwnerId(0)->save();
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_predelete() for user entities.
+ */
+function pu_help_guide_user_predelete(UserInterface $account): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('help_guide');
+
+  // Anonymize help guides owned by this user before deletion.
+  $help_guide_ids = $storage->getQuery()
+    ->condition('uid', $account->id())
+    ->accessCheck(FALSE)
+    ->execute();
+
+  $help_guides = $storage->loadMultiple($help_guide_ids);
+  foreach ($help_guides as $help_guide) {
+    if ($help_guide instanceof HelpGuide) {
+      $help_guide->setOwnerId(0);
+      $help_guide->save();
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function pu_help_guide_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+  $form_object = $form_state->getFormObject();
+
+  if ($form_object instanceof EntityFormInterface) {
+    $form['#attached']['library'][] = 'pu_help_guide/dialog_edit_styling';
+
+    $entity = $form_object->getEntity();
+    $storage = \Drupal::entityTypeManager()->getStorage('help_guide');
+
+    $helpGuides = $storage->loadByProperties([
+      'status' => 1,
+      'entity_type' => $entity->getEntityTypeId(),
+      'entity_bundle' => $entity->bundle(),
+    ]);
+
+    foreach ($helpGuides as $helpGuide) {
+      $field = $helpGuide->get('field_name')->value;
+
+      if ($field && isset($form[$field])) {
+        $form['#attached']['drupalSettings']['pu_help_guide']['fields'][$field] = $helpGuide->id();
+      }
+    }
+  }
+}
+
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function pu_help_guide_preprocess_html(array &$variables): void {
+  $route_match = \Drupal::routeMatch();
+  $route_name = $route_match->getRouteName();
+  $entity = $route_match->getParameter('help_guide');
+
+  if ($entity instanceof HelpGuide && $route_name === 'entity.help_guide.canonical') {
+    $variables['attributes']['class'][] = 'pu-help-guide';
+  }
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function pu_help_guide_admin_paths(): array {
+  return [
+    'help-guide/add' => TRUE,
+    'help-guide/*/edit' => TRUE,
+    'help-guide/*/delete' => TRUE,
+    'help-guide/*/revisions' => TRUE,
+    'help-guide/*/revision/*/view' => TRUE,
+    'help-guide/*/revision/*/delete' => TRUE,
+    'help-guide/*/revision/*/revert' => TRUE,
+    'admin/content/help-guide' => TRUE,
+    'admin/content/help-guide/delete-multiple' => TRUE,
+  ];
+}

@@ -1,0 +1,5 @@
+entity.help_guide.collection:
+  title: 'PU Help Guides'
+  description: 'List of help guides.'
+  route_name: view.help_guides.page_1
+  parent: system.admin_config_content

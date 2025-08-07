@@ -1,0 +1,10 @@
+entity.help_guide.edit_form:
+  route_name: entity.help_guide.edit_form
+  group: help_guide
+  title: 'Edit'
+
+entity.help_guide.delete_form:
+  route_name: entity.help_guide.delete_form
+  group: help_guide
+  title: 'Delete'
+  weight: 10

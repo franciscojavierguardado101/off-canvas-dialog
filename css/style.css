@@ -1,0 +1,300 @@
+/**
+ * @file
+ * Custom styles for the Help Guide module.
+ */
+ :root {
+  --toolbar-height: 70px; /* you were already using 70px as top padding */
+}
+/* ==========================================================================
+   Base Help Guide Components
+   ========================================================================== */
+
+div:has(.help-guide-modal-button .bg-icon) {
+  position: relative;
+}
+
+.help-guide-modal-button {
+  width: 15px;
+  display: inline-block;
+  height: 15px;
+  background-image: url(./icons/question-circle.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  margin-left: 1rem;
+}
+
+/* Ensure buttons align properly with fields */
+.form-wrapper:has(details) .help-guide-modal-button,
+.form-wrapper:has(fieldset) .help-guide-modal-button {
+  margin-left: 1rem;
+}
+
+/* ==========================================================================
+   Help Guide Entity Layout
+   ========================================================================== */
+
+.pu-help-guide main {
+  padding: 3.125rem;
+  margin: auto;
+  max-width: 60em;
+}
+
+#help-guide-entity-info .field {
+  display: inline-block;
+}
+
+/* ==========================================================================
+   Off-Canvas Dialog Styles
+   ========================================================================== */
+
+:root {
+   --toolbar-height: 40px; /* adjust based on inspection */
+ }
+ 
+#drupal-off-canvas-wrapper {
+  position: fixed !important;
+  top: 0 !important; /* Ensure it starts at the top */
+  right: 0;
+  max-width: 700px !important;
+  min-width: 600px !important;
+  width: auto !important;
+  height: 100vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  padding-top: 0 !important;
+  padding-bottom: 3rem !important;
+  box-sizing: border-box !important;
+  background-color: #fde6e7;
+  z-index: 10000 !important; /* Must be higher than toolbar (9999) */
+}
+  
+#drupal-off-canvas-wrapper .ui-dialog-titlebar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #fde6e7;
+}
+
+#drupal-off-canvas-wrapper .ui-dialog-titlebar::before {
+  mask-image: url(./icons/question-circle.svg) !important;
+}
+
+#drupal-off-canvas-wrapper .ui-dialog-content,
+#drupal-off-canvas-wrapper .pu-help-guide main {
+  width: 100% !important;
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+#drupal-off-canvas-wrapper #help-guide-entity-info,
+#drupal-off-canvas-wrapper .help-guide-label {
+  display: none;
+}
+
+#drupal-off-canvas-wrapper h2 {
+  margin-top: revert !important;
+}
+
+/* Resizing handle */
+#drupal-off-canvas-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -5px;
+  width: 10px;
+  height: 100%;
+  cursor: ew-resize;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.ui-resizable-handle {
+  width: 10px;
+  height: 100%;
+  position: absolute;
+  left: -5px;
+  top: 0;
+  cursor: col-resize;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+/* Off-canvas footer styles */
+#drupal-off-canvas-wrapper .dialog-bottom {
+  background-color: #282828;
+  padding: 1.5rem 0;
+  text-align: center;
+  width: calc(100% + 2 * var(--off-canvas-padding));
+  margin: 0 calc(-1 * var(--off-canvas-padding));
+  box-sizing: border-box;
+}
+
+#drupal-off-canvas-wrapper .dialog-bottom a,
+#drupal-off-canvas-wrapper .off-canvas-footer a {
+  text-decoration: underline;
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#drupal-off-canvas-wrapper .dialog-bottom a:focus,
+#drupal-off-canvas-wrapper .dialog-bottom a:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+#drupal-off-canvas-wrapper .off-canvas-footer .report-error {
+  background-color: #2d2d2d;
+  padding: 1rem 0;
+  margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+  #drupal-off-canvas-wrapper {
+    width: 100%;
+    max-width: none;
+    min-width: auto;
+  }
+}
+
+/* ==========================================================================
+   UI Dialog Styles
+   ========================================================================== */
+
+.ui-dialog-off-canvas .entity-meta {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Body and Layout Adjustments
+   ========================================================================== */
+
+/* Prevent body from being locked */
+body {
+  overflow: auto !important;
+}
+
+/* Make sure the body scrolls freely when the off-canvas opens */
+body.off-canvas-open {
+  overflow: hidden;
+}
+
+/* Ensure the toolbar stays fixed at the top */
+.toolbar, .admin-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+/* Ensure the breadcrumb is visible and positioned correctly */
+.breadcrumb-wrapper {
+  position: relative;
+  z-index: 9998;
+  margin-top: 56px;
+  padding-top: 20px;
+  display: block !important;
+  width: 100%;
+}
+
+/* Ensure the page title is visible */
+.page-title {
+  z-index: 9998;
+  position: relative;
+  margin-top: 56px;
+}
+
+/* Adjust main content (node edit form) to be below the breadcrumb */
+.layout-container, .page-node-edit {
+  margin-top: 100px;
+}
+
+/* ==========================================================================
+   Form Layout Adjustments
+   ========================================================================== */
+
+/* Ensure the main region aligns to the left */
+.layout-region--main {
+  margin-inline: 0 !important;
+  max-width: var(--layout-region-edit-width) !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Ensure the footer region aligns to the left */
+.layout-region--footer {
+  margin-inline: 0 !important;
+  max-width: var(--layout-region-edit-width) !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Ensure the form actions container aligns with the fields */
+#edit-actions.form-actions {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  max-width: var(--layout-region-edit-width) !important;
+  width: 100% !important;
+}
+
+/* Ensure the buttons container aligns with the fields */
+.form-actions__buttons {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Prevent label plus help icon from wrapping awkwardly */
+.form-wrapper label:has(.help-guide-modal-button) {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* Optional: reduce left margin slightly for better spacing on longer labels */
+.form-wrapper label .help-guide-modal-button {
+  margin-left: 0.5rem; /* Less spacing if 1rem feels too wide */
+  flex-shrink: 0;
+}
+
+#drupal-off-canvas-wrapper .contextual,
+#drupal-off-canvas-wrapper .contextual-links {
+  display: none !important;
+}
+
+/* Hide caption and credit fields inside off-canvas */
+#drupal-off-canvas-wrapper .field--name-field-credit,
+#drupal-off-canvas-wrapper .field--name-field-caption,
+#drupal-off-canvas-wrapper figcaption,
+#drupal-off-canvas-wrapper .media-caption,
+#drupal-off-canvas-wrapper .image-caption {
+  display: none !important;
+}
+
+
+/* ==========================================================================
+   Claro Theme Adjustments
+   ========================================================================== */
+
+/* Added margin-left for off-canvas dialog to give the summary some space  */
+summary .claro-details__summary-summary {
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+body.pu-help-guide .help-guide-label {
+  text-align: center;
+}
+body.pu-help-guide article {
+  margin-top: 10em;
+}
+body.pu-help-guide {
+  margin-top: 5em;
+}
+
+body.pu-help-guide article.media-image {
+  margin-top: 0;
+}

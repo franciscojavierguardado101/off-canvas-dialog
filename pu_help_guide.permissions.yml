@@ -1,0 +1,17 @@
+administer help_guide:
+  title: 'Administer help guides'
+  restrict access: true
+view help_guide:
+  title: 'View help guide'
+edit help_guide:
+  title: 'Edit help guide'
+delete help_guide:
+  title: 'Delete help guide'
+create help_guide:
+  title: 'Create help guide'
+view help_guide revision:
+  title: 'View help guide revision'
+revert help_guide revision:
+  title: 'Revert help guide revision'
+delete help_guide revision:
+  title: 'Delete help guide revision'

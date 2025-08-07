@@ -1,0 +1,10 @@
+dialog_edit_styling:
+  css:
+    theme:
+      css/style.css: {}
+  js:
+    js/script.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/once
