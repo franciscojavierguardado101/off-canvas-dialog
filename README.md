@@ -1,0 +1,7 @@
+How the “Help Guides” Drupal Module Works
+The Help Guides module is a custom Drupal module I developed to provide contextual, off-canvas guidance for content editors and site users directly within the Drupal interface.
+It works by allowing administrators or super users to create “Help Guide” nodes that are linked to specific fields or content types. Each guide node can include rich content such as formatted text, images, videos, and links relevant to the field or section it supports.
+When an editor views or edits a content node, the module dynamically attaches a small help icon next to each label or field. Clicking the icon triggers an off-canvas dialog — implemented using Drupal’s Dialog API — which displays the corresponding Help Guide node.
+The system uses custom entity references and field mappings to associate each Help Guide with the correct content field. AJAX is leveraged to load the help content asynchronously, ensuring minimal performance impact.
+Administrators can manage Help Guides through a custom configuration form that supports CRUD operations, permissions, and taxonomy-based organization. The module also integrates with Drupal’s caching system and supports multilingual sites.
+In short, this module enhances the Drupal authoring experience by offering context-aware documentation, inline guidance, and dynamic off-canvas dialogs, helping users learn and work efficiently without leaving the page.
