@@ -1,4 +1,4 @@
-name: 'PU Help Guide'
+name: 'Help Guide'
 type: module
 description: 'Define editorial help guides that open in a modal window when an editor clicks a help button near fields.'
 package: Custom
